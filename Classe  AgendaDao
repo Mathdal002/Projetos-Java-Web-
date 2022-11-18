@@ -1,4 +1,4 @@
-package br.gov.go.sefaz.agenda.dao;
+package br.com.MatheusSites.agenda.dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
