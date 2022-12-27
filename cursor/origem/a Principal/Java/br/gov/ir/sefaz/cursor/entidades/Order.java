@@ -11,7 +11,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.ManyToAny;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import br.gov.go.sefaz.curso.entidades.enums.OrderStatus;
 
 
 @Entity
@@ -22,7 +23,11 @@ public class Order implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+    
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:ss'Z'", timezone = "GMT")
 	private Instant moment;
+    
+    private Integer orderStatus;
 	
 	@ManyToOne
 	@JoinColumn(name = "client_id")
@@ -32,10 +37,11 @@ public class Order implements Serializable {
 	public Order() {
 	}
 	
-	public Order(Long id, Instant moment, User client) {
+	public Order(Long id, Instant moment, OrderStatus orderStatus, User client) {
 		super();
 		this.id = id;
 		this.moment = moment;
+		setOrderStatus(orderStatus);
 		this.client = client;
 	}
 
@@ -53,6 +59,16 @@ public class Order implements Serializable {
 
 	public void setMoment(Instant moment) {
 		this.moment = moment;
+	}
+	
+	public OrderStatus getOrderStatus() {
+		return  OrderStatus.valueOf(orderStatus);
+	}
+
+	public void setOrderStatus(OrderStatus orderStatus) {
+		if(orderStatus != null) {
+		   this.orderStatus = orderStatus.getCode();
+		}
 	}
 
 	public User getClient() {
@@ -72,14 +88,14 @@ public class Order implements Serializable {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
+	public boolean equals(Object object) {
+		if (this == object)
 			return true;
-		if (obj == null)
+		if (object == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (getClass() != object.getClass())
 			return false;
-		Order other = (Order) obj;
+		Order other = (Order) object;
 		if (id == null) {
 			if (other.id != null)
 				return false;
@@ -90,4 +106,3 @@ public class Order implements Serializable {
 	
 	
 }
-	
